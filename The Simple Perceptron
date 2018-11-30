@@ -1,0 +1,51 @@
+// Theperceptron.cpp: 定义控制台应用程序的入口点。
+//
+//简单感知器
+#include "stdafx.h"
+#include<iostream>
+using namespace std;
+
+void update(int *w0,int &b,int a,int c,int d,int lr) {
+	w0[0] = w0[0] + a*lr*d;
+	w0[1] = w0[1] + c * lr*d;
+	b = b+lr * d;
+
+}
+int  cal(int a, int b,int c,int d,int x1,int x2) {
+	return  d * (a*x1 + b * x2 + c);
+}
+int  check(int a ) {
+	if (a > 0) {
+		return 1;
+	}
+	return 0;
+}
+int main()
+{
+	
+	int a[3][3] = { {3,3,1},{4,3,1},{1,1,-1} };
+	int w0[2] = { 0,0 };
+	int b0 = 0;
+	int ln = 1;
+	
+		for (int i = 0; i < 3; )
+		{
+			int temp = cal(w0[0], w0[1], b0, a[i][2], a[i][0], a[i][1]);
+			cout << "temp:" << temp << endl;
+			if (check(temp)==0) {
+				update(w0, b0, a[i][0], a[i][1], a[i][2], ln);
+				cout << "wo:" << w0[0] << "," << w0[1] << endl;
+				i = 0;
+			}
+			else {
+				i++;
+			}
+		}
+	
+	
+
+	cout << w0[0] << "," << w0[1] << endl;
+	cout << b0;
+	system("pause");
+}
+
