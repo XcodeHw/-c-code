@@ -1,0 +1,97 @@
+// NeuralNetCPP.cpp: 定义控制台应用程序的入口点。
+//
+
+#include "stdafx.h"
+#include<iomanip>
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+class CNeuralNet {
+public:
+	CNeuralNet() {
+
+	}
+	
+	virtual int StepFunction(double x) {
+		if (x> 0) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	virtual double Sigmoid(double x) {
+
+		return 1 / (1 + exp(-x));
+	}
+	virtual double ReLU(double x) {
+		if (x > 0) {
+			return x;
+		}
+		else {
+			return 0;
+		}
+	}
+	virtual double IdentityFunction(double x) {
+		return x;
+	}
+	virtual vector<double>Dot(vector<double>a1,vector<vector<double>>a2) {
+		int a1_size = a1.size();
+		int a2_size = a2.size();
+		int a20_size = a2[0].size();
+		vector<double>res;
+		for (int i = 0; i < a20_size; i++) {
+			double temp = 0.0;
+			for (int j = 0; j < a2_size; j++) {
+				temp+=a2[j][i] * a1[j];
+			}
+			res.push_back(temp);
+		}
+		return res;
+	}
+	
+	
+};
+int main()
+{/*
+ w*为权值，b*为偏移
+ */
+	CNeuralNet nn;
+	vector<vector<double>>w1 = { {0.1,0.3,0.5},{0.2,0.4,0.6} };
+	vector<double>b1 = {0.1,0.2,0.3 };
+	vector<vector<double>>w2 = { {0.1,0.4},{0.2,0.5},{0.3,0.6} };
+	vector<double>b2 = {0.1,0.2};
+	vector<vector<double>>w3 = { {0.1,0.3},{0.2,0.4} };
+	vector<double>b3 = {0.1,0.2};
+	vector<double>x = { 1.0,0.5 };
+	vector<double>re = nn.Dot(x, w1);
+	vector<double>re_out;
+	for (int i = 0; i < re.size(); i++) {
+		double temp = nn.Sigmoid(re[i] + b1[i]);
+		re_out.push_back(temp);
+	}
+	
+	vector<double>re2 = nn.Dot(re_out,w2);
+	vector<double>re_out2;
+	for (int i = 0; i < re2.size(); i++) {
+		double temp = nn.Sigmoid(re2[i] + b2[i]);
+		re_out2.push_back(temp);
+	}
+	vector<double>re3 = nn.Dot(re_out2, w3);
+	vector<double>re_out3;
+	for (int i = 0; i < re3.size(); i++) {
+		double temp = re3[i] + b3[i];
+		re_out3.push_back(temp);
+	}
+	for (int i = 0; i < re_out3.size(); i++) {
+		double y = nn.IdentityFunction(re_out3[i]);
+		cout << setiosflags(ios::fixed) << setprecision(8) << y;
+	}
+	
+	
+	system("pause");
+    return 0;
+}
+
